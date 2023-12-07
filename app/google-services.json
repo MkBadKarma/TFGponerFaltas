@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "1073285622267",
+    "project_id": "tfgponerfaltas",
+    "storage_bucket": "tfgponerfaltas.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1073285622267:android:42b892e2dde558b2ccc35e",
+        "android_client_info": {
+          "package_name": "com.ponerfaltas"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDA-yxQa2JBxu8gmwb9JgC6t3TpIz9o288"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1",
+  "database_url": "https://tfgponerfaltas-default-rtdb.europe-west1.firebasedatabase.app/"
+}
