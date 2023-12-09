@@ -33,33 +33,31 @@ public class MaestroClases extends AppCompatActivity {
     }
 
     private void loadClases() {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
         if (user != null) {
             String email = user.getEmail();
-            db.collection("teacher")
+
+            FirebaseFirestore.getInstance()
+                    .collection("teacher")
                     .whereEqualTo("email", email)
                     .get()
-                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                            if (task.isSuccessful()) {
-                                for (QueryDocumentSnapshot document : task.getResult()) {
-                                    String clasesString = document.getString("clases");
-                                    if (clasesString != null) {
-                                        clasesString = clasesString.trim();
-                                        List<String> clases = Arrays.asList(clasesString.split(", "));
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                String clasesString = document.getString("clases");
+                                if (clasesString != null) {
+                                    clasesString = clasesString.trim();
+                                    List<String> clases = Arrays.asList(clasesString.split(", "));
 
-                                        ArrayAdapter<String> adapter = new ArrayAdapter<>(MaestroClases.this, android.R.layout.simple_list_item_1, clases);
-                                        listView.setAdapter(adapter);
-                                    } else {
-                                        Log.d(TAG, "clasesString is null");
-                                    }
+                                    ArrayAdapter<String> adapter = new ArrayAdapter<>(MaestroClases.this, android.R.layout.simple_list_item_1, clases);
+                                    listView.setAdapter(adapter);
+                                } else {
+                                    Log.d(TAG, "clasesString is null");
                                 }
-                            } else {
-                                Log.d(TAG, "Error getting documents: ", task.getException());
                             }
+                        } else {
+                            Log.d(TAG, "Error getting documents: ", task.getException());
                         }
                     });
         } else {
@@ -67,3 +65,4 @@ public class MaestroClases extends AppCompatActivity {
         }
     }
 }
+

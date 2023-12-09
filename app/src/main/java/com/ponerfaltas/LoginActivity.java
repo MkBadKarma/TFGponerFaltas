@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -35,6 +36,7 @@ public class LoginActivity extends AppCompatActivity {
             String email = usernameEditText.getText().toString().trim();
             String password = passwordEditText.getText().toString().trim();
 
+            // Check user in both collections
             checkUserInCollection("teacher", email, password);
             checkUserInCollection("student", email, password);
         });
@@ -46,18 +48,24 @@ public class LoginActivity extends AppCompatActivity {
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        for (DocumentSnapshot document : task.getResult()) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
                             String storedPassword = document.getString("password");
-                            String accountType = collectionName;
 
                             if (password.equals(storedPassword)) {
-                                redirectToCorrectActivity(accountType);
+                                mAuth.signInWithEmailAndPassword(email, password)
+                                        .addOnCompleteListener(this, authTask -> {
+                                            if (authTask.isSuccessful()) {
+                                                redirectToCorrectActivity(collectionName);
+                                            } else {
+                                                showToast("Authentication failed.");
+                                                Log.d("LoginActivity", "Authentication failed.");
+                                            }
+                                        });
                                 return;
-                            } else {
-                                Log.d("LoginActivity", "Contraseña incorrecta");
                             }
                         }
                         Log.d("LoginActivity", "No se encontró la cuenta en la colección: " + collectionName);
+                        showToast("No se encontró la cuenta en la colección: " + collectionName);
                     } else {
                         Log.e("LoginActivity", "Error obteniendo documentos: ", task.getException());
                         showToast("Error de base de datos: " + task.getException().getMessage());
@@ -66,7 +74,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void redirectToCorrectActivity(String accountType) {
-        Class targetActivity;
+        Class<? extends AppCompatActivity> targetActivity;
         if (accountType.equals("teacher")) {
             targetActivity = MaestroClases.class;
         } else {
@@ -75,8 +83,8 @@ public class LoginActivity extends AppCompatActivity {
 
         Intent intent = new Intent(LoginActivity.this, targetActivity);
         startActivity(intent);
-        finish();
     }
+
 
     private void showToast(String message) {
         Toast.makeText(LoginActivity.this, message, Toast.LENGTH_SHORT).show();
