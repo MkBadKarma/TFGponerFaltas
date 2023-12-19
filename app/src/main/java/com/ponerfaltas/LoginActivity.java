@@ -10,7 +10,6 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -36,7 +35,6 @@ public class LoginActivity extends AppCompatActivity {
             String email = usernameEditText.getText().toString().trim();
             String password = passwordEditText.getText().toString().trim();
 
-            // Check user in both collections
             checkUserInCollection("teacher", email, password);
             checkUserInCollection("student", email, password);
         });
@@ -84,7 +82,6 @@ public class LoginActivity extends AppCompatActivity {
         Intent intent = new Intent(LoginActivity.this, targetActivity);
         startActivity(intent);
     }
-
 
     private void showToast(String message) {
         Toast.makeText(LoginActivity.this, message, Toast.LENGTH_SHORT).show();

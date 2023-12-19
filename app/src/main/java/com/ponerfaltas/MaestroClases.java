@@ -1,19 +1,18 @@
 package com.ponerfaltas;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -28,6 +27,11 @@ public class MaestroClases extends AppCompatActivity {
         setContentView(R.layout.activity_maestro_clases);
 
         listView = findViewById(R.id.listview);
+
+        listView.setOnItemClickListener((parent, view, position, id) -> {
+            String selectedClass = (String) parent.getItemAtPosition(position);
+            goToStudentsActivity(selectedClass);
+        });
 
         loadClases();
     }
@@ -64,5 +68,10 @@ public class MaestroClases extends AppCompatActivity {
             Log.d(TAG, "User is not authenticated");
         }
     }
-}
 
+    private void goToStudentsActivity(String selectedClass) {
+        Intent intent = new Intent(MaestroClases.this, ListadoAlumnos.class);
+        intent.putExtra("selectedClass", selectedClass);
+        startActivity(intent);
+    }
+}
