@@ -15,6 +15,9 @@
         android:theme="@style/Theme.PonerFaltas"
         tools:targetApi="31">
         <activity
+            android:name=".AgregarFaltasActivity"
+            android:exported="false" />
+        <activity
             android:name=".ListadoAlumnos"
             android:exported="false" />
         <activity
