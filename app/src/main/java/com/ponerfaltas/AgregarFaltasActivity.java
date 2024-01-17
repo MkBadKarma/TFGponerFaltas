@@ -20,8 +20,10 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class AgregarFaltasActivity extends AppCompatActivity {
     private static final String TAG = "AgregarFaltasActivity";
@@ -35,6 +37,8 @@ public class AgregarFaltasActivity extends AppCompatActivity {
         setContentView(R.layout.activity_agregar_faltas);
 
         selectedClass = getIntent().getStringExtra("selectedClass");
+        studentName = getIntent().getStringExtra("studentName");
+
 
         Spinner spinnerSubject = findViewById(R.id.spinnerSubject);
         loadSubjectOptions(selectedClass, spinnerSubject);
@@ -66,21 +70,31 @@ public class AgregarFaltasActivity extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         List<String> subjects = new ArrayList<>();
                         for (QueryDocumentSnapshot document : task.getResult()) {
-                            studentName = document.getString("nombre");
+                            String currentStudentName = document.getString("nombre");
                             String classesString = document.getString("clase");
                             if (classesString != null) {
                                 classesString = classesString.trim();
                                 subjects.addAll(Arrays.asList(classesString.split(", ")));
+                                if (studentName == null) {
+                                    studentName = currentStudentName;
+                                }
                             } else {
                                 Log.d(TAG, "Classes list is null or empty");
                             }
                         }
 
-                        setupSubjectSpinner(spinnerSubject, subjects);
+                        List<String> uniqueSubjects = removeDuplicates(subjects);
+                        setupSubjectSpinner(spinnerSubject, uniqueSubjects);
                     } else {
                         Log.d(TAG, "Error getting documents: ", task.getException());
                     }
                 });
+    }
+
+
+    private List<String> removeDuplicates(List<String> list) {
+        Set<String> uniqueSet = new HashSet<>(list);
+        return new ArrayList<>(uniqueSet);
     }
 
     private void setupSubjectSpinner(Spinner spinnerSubject, List<String> subjects) {
@@ -118,7 +132,6 @@ public class AgregarFaltasActivity extends AppCompatActivity {
         DocumentReference absencesRef = db.collection("Faltas").document();
 
         Map<String, Object> absenceData = new HashMap<>();
-        absenceData.put("student_id", FirebaseAuth.getInstance().getCurrentUser().getUid());
         absenceData.put("nombre_alumno", studentName);
         absenceData.put("nombre_maestro", teacherName);
         absenceData.put("fecha", formattedDate);

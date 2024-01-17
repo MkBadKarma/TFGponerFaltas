@@ -44,7 +44,6 @@ public class ListadoAlumnos extends AppCompatActivity {
             }
         });
 
-        // Load students for the selected class
         String selectedClass = getIntent().getStringExtra("selectedClass");
         if (selectedClass != null) {
             loadStudents(selectedClass);
@@ -81,6 +80,8 @@ public class ListadoAlumnos extends AppCompatActivity {
         intent.putExtra("selectedTeacherId", selectedTeacherId);
         intent.putExtra("selectedClass", selectedClass);
         intent.putExtra("selectedStudentId", selectedStudentId);
+        intent.putExtra("studentName", selectedStudentId);
         startActivity(intent);
     }
+
 }

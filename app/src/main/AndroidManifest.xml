@@ -24,6 +24,9 @@
             android:name=".MaestroClases"
             android:exported="false" />
         <activity
+            android:name=".FaltasInfoAlumno"
+            android:exported="false"/>
+        <activity
             android:name=".AlumnoAsignaturas"
             android:exported="false" />
         <activity

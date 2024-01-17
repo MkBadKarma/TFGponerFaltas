@@ -1,5 +1,6 @@
 package com.ponerfaltas;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ArrayAdapter;
@@ -16,7 +17,6 @@ import java.util.Arrays;
 import java.util.List;
 
 public class AlumnoAsignaturas extends AppCompatActivity {
-
     private static final String TAG = "AlumnoAsignaturas";
     private ListView listView;
 
@@ -26,8 +26,15 @@ public class AlumnoAsignaturas extends AppCompatActivity {
         setContentView(R.layout.activity_alumno_asignaturas);
 
         listView = findViewById(R.id.listview);
-
         loadClases();
+
+        listView.setOnItemClickListener((parent, view, position, id) -> {
+            String selectedSubject = (String) parent.getItemAtPosition(position);
+
+            Intent intent = new Intent(AlumnoAsignaturas.this, FaltasInfoAlumno.class);
+            intent.putExtra("selectedSubject", selectedSubject);
+            startActivity(intent);
+        });
     }
 
     private void loadClases() {
@@ -63,4 +70,3 @@ public class AlumnoAsignaturas extends AppCompatActivity {
         }
     }
 }
-
